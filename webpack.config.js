@@ -35,7 +35,12 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: [MiniCssExtractPlugin.loader, 'css-loader']
+                use: [{
+                    loader: MiniCssExtractPlugin.loader,
+                    options: {
+                        esModule: true,
+                    }
+                }, 'css-loader']
             }, {
                 test: /\.(woff|woff2|svg|ttf|eot)$/,
                 use: [
@@ -58,8 +63,8 @@ module.exports = {
         }),
         new MiniCssExtractPlugin({
             // 类似 webpackOptions.output里面的配置 可以忽略
-            filename: '[name].[hash].css',
-            chunkFilename: "app.css"
+            filename: '[name].[hash:8].css',
+            chunkFilename: "[id].css"
         }),
         new CleanWebpackPlugin(),
     ],
