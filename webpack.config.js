@@ -6,6 +6,7 @@ const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plug
 
 module.exports = {
     mode: "development",
+    // 生产模拟自动压缩js代码
     // mode: "production",
     // devtool: "inline-source-map",
     devtool: 'source-map',
@@ -82,6 +83,12 @@ module.exports = {
             title: "Typescript In Action",
             template: resolve(__dirname, "./src/index.html"),
             filename: "index.html",
+            minify: {
+                collapseWhitespace: true,
+                removeComments: true,
+                minifyCSS: true,
+                minifyJS: true
+            }
         }),
         new MiniCssExtractPlugin({
             // 类似 webpackOptions.output里面的配置 可以忽略
