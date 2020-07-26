@@ -8,3 +8,13 @@ import 'font-awesome/fonts/fontawesome-webfont.woff2'
 
 import './scss/index.scss'
 import './css/style.css'
+import './scss/about.scss'
+
+import Swal from 'sweetalert2'
+// 使用bootstrap4的主题
+import '@sweetalert2/theme-bootstrap-4/bootstrap-4.scss';
+
+// import jQuery from 'jquery'
+import $ from 'jquery'
+
+import './js/users.js'

@@ -1,4 +1,5 @@
 const {resolve} = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
@@ -10,9 +11,9 @@ module.exports = {
     // mode: "production",
     // devtool: "inline-source-map",
     devtool: 'source-map',
-    entry: "./src/index.ts",
+    entry: ['./src/index.ts', './src/index.html'],
     output: {
-        filename: "js/app.js",
+        filename: "js/app.[hash:8].js",
         path: resolve(__dirname, "dist")
     },
     resolve: {
@@ -83,19 +84,23 @@ module.exports = {
             title: "Typescript In Action",
             template: resolve(__dirname, "./src/index.html"),
             filename: "index.html",
-            minify: {
-                collapseWhitespace: true,
-                removeComments: true,
-                minifyCSS: true,
-                minifyJS: true
-            }
+            // minify: {
+            //     collapseWhitespace: true,
+            //     removeComments: true,
+            //     minifyCSS: true,
+            //     minifyJS: true
+            // }
         }),
         new MiniCssExtractPlugin({
             // 类似 webpackOptions.output里面的配置 可以忽略
-            filename: 'css/[name].[hash:8].css',
-            chunkFilename: "[id].css"
+            filename: 'css/[name].[contenthash].css'
         }),
         new OptimizeCssAssetsWebpackPlugin(),
+        // 经过多次测试还是这里可用导入jquery
+        new webpack.ProvidePlugin({
+            jQuery: "jquery",
+            $: "jquery"
+        }),
         new CleanWebpackPlugin(),
     ],
 
@@ -105,6 +110,12 @@ module.exports = {
         compress: true,
         port: 4200,
         // 打开默认浏览器
-        open: true
+        open: true,
+        hot: true
+    },
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        }
     }
 };
