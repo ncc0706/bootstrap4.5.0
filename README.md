@@ -1,6 +1,5 @@
 
 
 ```
-npm i url-loader -D
-npm i file-loader -D
+npm i file-loade -D
 ```
