@@ -6,7 +6,5 @@ import 'font-awesome/fonts/fontawesome-webfont.svg'
 import 'font-awesome/fonts/fontawesome-webfont.woff'
 import 'font-awesome/fonts/fontawesome-webfont.woff2'
 
+import './scss/index.scss'
 import './css/style.css'
-
-import './scss/commons.scss'
-import './ts/_base'

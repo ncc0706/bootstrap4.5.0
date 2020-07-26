@@ -1,7 +1,8 @@
-const path = require('path');
+const {resolve} = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = {
     mode: "development",
@@ -11,7 +12,7 @@ module.exports = {
     entry: "./src/index.ts",
     output: {
         filename: "app.js",
-        path: path.join(__dirname, "/dist")
+        path: resolve(__dirname, "/dist")
     },
     resolve: {
         // Add `.ts` and `.tsx` as a resolvable extension.
@@ -31,15 +32,16 @@ module.exports = {
                 // test: /\.s?[ac]ss$/,
 
                 test: /\.scss$/,
-                use: ['style-loader', 'css-loader', 'sass-loader']
+                // use: ['style-loader', 'css-loader', 'sass-loader']
+                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
             },
             {
                 test: /\.css$/,
                 use: [{
                     loader: MiniCssExtractPlugin.loader,
-                    options: {
-                        esModule: true,
-                    }
+                    // options: {
+                    //     esModule: true,
+                    // }
                 }, 'css-loader']
             }, {
                 test: /\.(woff|woff2|svg|ttf|eot)$/,
@@ -52,13 +54,33 @@ module.exports = {
                         }
                     }
                 ]
+            }, {
+                test: /\.(png|svg|jpg|gif)$/,
+                use: [
+                    {
+                        // url-loader默认使用es6模块解析, html-loader引入图片是commonjs
+                        // 解析时会出问题,需配合html-loader使用
+                        loader: 'url-loader',
+                        options: {
+                            outputPath: 'images',
+                            limit: 10 * 1024,
+                            name: '[hash:8].[ext]'
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.html$/i,
+                use: {
+                    loader: 'html-loader',
+                }
             }
         ],
     },
     plugins: [
         new HtmlWebpackPlugin({
             title: "Typescript In Action",
-            template: path.join(__dirname, "./src/index.html"),
+            template: resolve(__dirname, "./src/index.html"),
             filename: "index.html",
         }),
         new MiniCssExtractPlugin({
@@ -66,6 +88,16 @@ module.exports = {
             filename: '[name].[hash:8].css',
             chunkFilename: "[id].css"
         }),
+        new OptimizeCssAssetsWebpackPlugin(),
         new CleanWebpackPlugin(),
     ],
+
+    devServer: {
+        contentBase: resolve(__dirname, 'dist'),
+        // 启动gzip压缩
+        compress: true,
+        port: 4200,
+        // 打开默认浏览器
+        open: true
+    }
 };
