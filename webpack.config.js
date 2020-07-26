@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
+const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
 
 module.exports = {
     mode: "development",
@@ -11,7 +12,10 @@ module.exports = {
     // mode: "production",
     // devtool: "inline-source-map",
     devtool: 'source-map',
-    entry: ['./src/index.ts', './src/index.html'],
+    entry: {
+        app: ['./src/index.ts'],
+        index: './src/index.html'
+    },
     output: {
         filename: "js/app.[hash:8].js",
         path: resolve(__dirname, "dist")
@@ -23,7 +27,11 @@ module.exports = {
     module: {
         rules: [
             // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
-            {test: /\.tsx?$/, loader: "ts-loader"},
+            {
+                test: /\.tsx?$/,
+                loader: "ts-loader",
+                exclude: /node_modules/
+            },
             {
                 // 增加对SCSS文件的支持,
                 // test: /\.scss/,
@@ -97,9 +105,24 @@ module.exports = {
         }),
         new OptimizeCssAssetsWebpackPlugin(),
         // 经过多次测试还是这里可用导入jquery
-        new webpack.ProvidePlugin({
-            jQuery: "jquery",
-            $: "jquery"
+        // new webpack.ProvidePlugin({
+        //     jQuery: "jquery",
+        //     $: "jquery"
+        // }),
+
+        // 最佳实践,
+        // 告诉 webpack 哪些库不要打包
+        // npm i add-asset-html-webpack-plugin -D
+        new webpack.DllReferencePlugin(
+            {
+                manifest: resolve(__dirname, 'dll/manifest.json')
+            }
+        ),
+        // 将某个文件打包出去,并在html页面中自动引入该资源
+        new AddAssetHtmlPlugin({
+            filepath: resolve(__dirname, 'dll/jquery.js'),
+            outputPath: 'vendor',
+            publicPath: 'vendor'
         }),
         new CleanWebpackPlugin(),
     ],

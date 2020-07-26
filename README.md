@@ -5,7 +5,9 @@ npm i file-loade url-loader html-loader -D
 
 npm i optimize-css-assets-webpack-plugin -D
 
-npm i expose-loader -D
+
+npm i add-asset-html-webpack-plugin -D
+
 ```
 
 
