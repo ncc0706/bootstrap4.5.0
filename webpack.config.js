@@ -12,8 +12,8 @@ module.exports = {
     devtool: 'source-map',
     entry: "./src/index.ts",
     output: {
-        filename: "app.js",
-        path: resolve(__dirname, "/dist")
+        filename: "js/app.js",
+        path: resolve(__dirname, "dist")
     },
     resolve: {
         // Add `.ts` and `.tsx` as a resolvable extension.
@@ -92,7 +92,7 @@ module.exports = {
         }),
         new MiniCssExtractPlugin({
             // 类似 webpackOptions.output里面的配置 可以忽略
-            filename: '[name].[hash:8].css',
+            filename: 'css/[name].[hash:8].css',
             chunkFilename: "[id].css"
         }),
         new OptimizeCssAssetsWebpackPlugin(),
